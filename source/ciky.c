@@ -120,8 +120,34 @@ int analogRead(sensors sensor)
 }
 
 
-void CIKY_InitUltrasonic(void){
+unsigned long pulseIn(GPIO_Type *base, uint32_t pin, bool state, uint32_t timeout)
+{
 
+	unsigned long width = 0;
+
+
+	unsigned long numloops = 0;
+	unsigned long maxloops = timeout<<1;
+
+	// wait for any previous pulse to end
+	while (GPIO_PinRead(base,pin) == state)
+		if (numloops++ == maxloops)
+			return 0;
+
+	// wait for the pulse to start
+	while (GPIO_PinRead(base,pin) != state)
+		if (numloops++ == maxloops)
+			return 0;
+
+	// wait for the pulse to stop
+	while (GPIO_PinRead(base,pin) == state) {
+		if (numloops++ == maxloops)
+			return 0;
+		width++;
+	}
+
+
+	return width>>1; //not accurate
 }
 
 

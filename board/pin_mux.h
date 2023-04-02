@@ -125,6 +125,32 @@ void BOARD_InitBootPins(void);
 #define BOARD_INITPINS_A3_PIN_MASK (1U << 11U)      /*!<@brief PORT pin mask */
                                                     /* @} */
 
+/*! @name PORTC8 (number 80), J1[7]
+  @{ */
+
+/* Symbols to be used with GPIO driver */
+#define BOARD_INITPINS_pTrig_GPIO GPIOC               /*!<@brief GPIO peripheral base pointer */
+#define BOARD_INITPINS_pTrig_GPIO_PIN_MASK (1U << 8U) /*!<@brief GPIO pin mask */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_INITPINS_pTrig_PORT PORTC               /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_pTrig_PIN 8U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_pTrig_PIN_MASK (1U << 8U)      /*!<@brief PORT pin mask */
+                                                      /* @} */
+
+/*! @name PORTC9 (number 81), J1[9]
+  @{ */
+
+/* Symbols to be used with GPIO driver */
+#define BOARD_INITPINS_pEcho_GPIO GPIOC               /*!<@brief GPIO peripheral base pointer */
+#define BOARD_INITPINS_pEcho_GPIO_PIN_MASK (1U << 9U) /*!<@brief GPIO pin mask */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_INITPINS_pEcho_PORT PORTC               /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_pEcho_PIN 9U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_pEcho_PIN_MASK (1U << 9U)      /*!<@brief PORT pin mask */
+                                                      /* @} */
+
 /*!
  * @brief Configures pin routing and optionally pin electrical features.
  *

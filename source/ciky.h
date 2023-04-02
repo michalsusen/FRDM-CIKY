@@ -10,6 +10,7 @@
 
 #include "fsl_ftm.h"
 #include "fsl_adc16.h"
+#include "fsl_gpio.h"
 
 typedef enum {
   A0,
@@ -43,7 +44,6 @@ typedef enum {
 
 void CIKY_InitSensors(void);
 void CIKY_InitMotors(void);
-void CIKY_InitUltrasonic(void);
 
 
 int analogRead(sensors sensor);
@@ -52,6 +52,7 @@ int analogRead(sensors sensor);
 
 long map(long x, long in_min, long in_max, long out_min, long out_max);
 void setMotors(uint8_t mLp,  uint8_t mRp);
+unsigned long pulseIn(GPIO_Type *base, uint32_t pin, bool state, uint32_t timeout);
 
 
 

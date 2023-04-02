@@ -18,6 +18,8 @@ pin_labels:
 - {pin_num: '64', pin_signal: PTB18/CAN0_TX/FTM2_CH0/I2S0_TX_BCLK/FB_AD15/FTM2_QD_PHA, label: 'J1[1]', identifier: mRs}
 - {pin_num: '65', pin_signal: PTB19/CAN0_RX/FTM2_CH1/I2S0_TX_FS/FB_OE_b/FTM2_QD_PHB, label: 'J1[3]', identifier: mLs}
 - {pin_num: '71', pin_signal: ADC0_SE15/PTC1/LLWU_P6/SPI0_PCS3/UART1_RTS_b/FTM0_CH0/FB_AD13/I2S0_TXD0, label: 'J1[5]', identifier: mLp}
+- {pin_num: '80', pin_signal: ADC1_SE4b/CMP0_IN2/PTC8/FTM3_CH4/I2S0_MCLK/FB_AD7, label: 'J1[7]', identifier: pTrig}
+- {pin_num: '81', pin_signal: ADC1_SE5b/CMP0_IN3/PTC9/FTM3_CH5/I2S0_RX_BCLK/FB_AD6/FTM2_FLT0, label: 'J1[9]', identifier: pEcho}
 - {pin_num: '32', pin_signal: ADC0_SE18/PTE25/UART4_RX/I2C0_SDA/EWM_IN, label: 'J2[18]/U8[6]/I2C0_SDA', identifier: ACCEL_SDA;A2}
 - {pin_num: '31', pin_signal: ADC0_SE17/PTE24/UART4_TX/I2C0_SCL/EWM_OUT_b, label: 'J2[20]/U8[4]/I2C0_SCL', identifier: ACCEL_SCL;A3}
 - {pin_num: '55', pin_signal: ADC0_SE12/PTB2/I2C0_SCL/UART0_RTS_b/ENET0_1588_TMR0/FTM0_FLT3, label: 'J4[2]', identifier: ADC0_SE12;A0}
@@ -62,6 +64,8 @@ BOARD_InitPins:
   - {pin_num: '56', peripheral: ADC0, signal: 'SE, 13', pin_signal: ADC0_SE13/PTB3/I2C0_SDA/UART0_CTS_b/UART0_COL_b/ENET0_1588_TMR1/FTM0_FLT0}
   - {pin_num: '58', peripheral: ADC1, signal: 'SE, 14', pin_signal: ADC1_SE14/PTB10/SPI1_PCS0/UART3_RX/FB_AD19/FTM0_FLT1}
   - {pin_num: '59', peripheral: ADC1, signal: 'SE, 15', pin_signal: ADC1_SE15/PTB11/SPI1_SCK/UART3_TX/FB_AD18/FTM0_FLT2}
+  - {pin_num: '80', peripheral: GPIOC, signal: 'GPIO, 8', pin_signal: ADC1_SE4b/CMP0_IN2/PTC8/FTM3_CH4/I2S0_MCLK/FB_AD7, direction: OUTPUT}
+  - {pin_num: '81', peripheral: GPIOC, signal: 'GPIO, 9', pin_signal: ADC1_SE5b/CMP0_IN3/PTC9/FTM3_CH5/I2S0_RX_BCLK/FB_AD6/FTM2_FLT0, direction: INPUT}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -92,6 +96,20 @@ void BOARD_InitPins(void)
     };
     /* Initialize GPIO functionality on pin PTB19 (pin 65)  */
     GPIO_PinInit(BOARD_INITPINS_mLs_GPIO, BOARD_INITPINS_mLs_PIN, &mLs_config);
+
+    gpio_pin_config_t pTrig_config = {
+        .pinDirection = kGPIO_DigitalOutput,
+        .outputLogic = 0U
+    };
+    /* Initialize GPIO functionality on pin PTC8 (pin 80)  */
+    GPIO_PinInit(BOARD_INITPINS_pTrig_GPIO, BOARD_INITPINS_pTrig_PIN, &pTrig_config);
+
+    gpio_pin_config_t pEcho_config = {
+        .pinDirection = kGPIO_DigitalInput,
+        .outputLogic = 0U
+    };
+    /* Initialize GPIO functionality on pin PTC9 (pin 81)  */
+    GPIO_PinInit(BOARD_INITPINS_pEcho_GPIO, BOARD_INITPINS_pEcho_PIN, &pEcho_config);
 
     /* PORTB10 (pin 58) is configured as ADC1_SE14 */
     PORT_SetPinMux(BOARD_INITPINS_A2_PORT, BOARD_INITPINS_A2_PIN, kPORT_PinDisabledOrAnalog);
@@ -138,6 +156,12 @@ void BOARD_InitPins(void)
 
     /* PORTC2 (pin 72) is configured as FTM0_CH1 */
     PORT_SetPinMux(BOARD_INITPINS_mRp_PORT, BOARD_INITPINS_mRp_PIN, kPORT_MuxAlt4);
+
+    /* PORTC8 (pin 80) is configured as PTC8 */
+    PORT_SetPinMux(BOARD_INITPINS_pTrig_PORT, BOARD_INITPINS_pTrig_PIN, kPORT_MuxAsGpio);
+
+    /* PORTC9 (pin 81) is configured as PTC9 */
+    PORT_SetPinMux(BOARD_INITPINS_pEcho_PORT, BOARD_INITPINS_pEcho_PIN, kPORT_MuxAsGpio);
 
     SIM->SOPT5 = ((SIM->SOPT5 &
                    /* Mask bits to zero which are setting */
