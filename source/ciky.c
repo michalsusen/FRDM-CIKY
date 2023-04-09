@@ -20,41 +20,84 @@ void CIKY_InitMotors(void)
 	/* Fill in the FTM config struct with the default settings */
 	FTM_GetDefaultConfig(&ftmInfo);
 	/* Calculate the clock division based on the PWM frequency to be obtained */
-	ftmInfo.prescale = FTM_CalculateCounterClkDiv(BOARD_FTM_BASEADDR, PWM_FREQUENCY, FTM_SOURCE_CLOCK);
+	ftmInfo.prescale = FTM_CalculateCounterClkDiv(MOTORS_FTM_BASEADDR, MOTORS_PWM_FREQUENCY, FTM_SOURCE_CLOCK);
 	/* Initialize FTM module */
-	FTM_Init(BOARD_FTM_BASEADDR, &ftmInfo);
+	FTM_Init(MOTORS_FTM_BASEADDR, &ftmInfo);
 
 	/* Configure ftm params with frequency 24kHZ */
-	ftmParam[0].chnlNumber            = (ftm_chnl_t)LEFT_FTM_CHANNEL;
+	ftmParam[0].chnlNumber            = (ftm_chnl_t)LEFT_MOTOR_FTM_CHANNEL;
 	ftmParam[0].level                 = FTM_PWM_ON_LEVEL;
 	ftmParam[0].dutyCyclePercent      = 0U;
 	ftmParam[0].firstEdgeDelayPercent = 0U;
 	ftmParam[0].enableComplementary   = false;
 	ftmParam[0].enableDeadtime        = false;
 
-	ftmParam[1].chnlNumber            = (ftm_chnl_t)RIGHT_FTM_CHANNEL;
+	ftmParam[1].chnlNumber            = (ftm_chnl_t)RIGHT_MOTOR_FTM_CHANNEL;
 	ftmParam[1].level                 = FTM_PWM_ON_LEVEL;
 	ftmParam[1].dutyCyclePercent      = 0U;
 	ftmParam[1].firstEdgeDelayPercent = 0U;
 	ftmParam[1].enableComplementary   = false;
 	ftmParam[1].enableDeadtime        = false;
 	if (kStatus_Success !=
-		FTM_SetupPwm(BOARD_FTM_BASEADDR, ftmParam, 2U, kFTM_EdgeAlignedPwm, PWM_FREQUENCY, FTM_SOURCE_CLOCK))
+		FTM_SetupPwm(MOTORS_FTM_BASEADDR, ftmParam, 2U, kFTM_EdgeAlignedPwm, MOTORS_PWM_FREQUENCY, FTM_SOURCE_CLOCK))
 	{
 		return -1;
 	}
-	FTM_StartTimer(BOARD_FTM_BASEADDR, kFTM_SystemClock);
+	FTM_StartTimer(MOTORS_FTM_BASEADDR, kFTM_SystemClock);
 }
 
 void setMotors(uint8_t mLp,  uint8_t mRp)
 {
 
 	/* Start PWM mode with updated duty cycle */
-	FTM_UpdatePwmDutycycle(BOARD_FTM_BASEADDR, (ftm_chnl_t)LEFT_FTM_CHANNEL,kFTM_EdgeAlignedPwm, map(mLp, 0, 255, 0, 100));
-	FTM_UpdatePwmDutycycle(BOARD_FTM_BASEADDR, (ftm_chnl_t)RIGHT_FTM_CHANNEL,kFTM_EdgeAlignedPwm, map(mRp, 0, 255, 0, 100));
+	FTM_UpdatePwmDutycycle(MOTORS_FTM_BASEADDR, (ftm_chnl_t)LEFT_MOTOR_FTM_CHANNEL,kFTM_EdgeAlignedPwm, map(mLp, 0, 255, 0, 100));
+	FTM_UpdatePwmDutycycle(MOTORS_FTM_BASEADDR, (ftm_chnl_t)RIGHT_MOTOR_FTM_CHANNEL,kFTM_EdgeAlignedPwm, map(mRp, 0, 255, 0, 100));
 
 	/* Software trigger to update registers */
-	FTM_SetSoftwareTrigger(BOARD_FTM_BASEADDR, true);
+	FTM_SetSoftwareTrigger(MOTORS_FTM_BASEADDR, true);
+
+}
+
+void CIKY_InitServo(void)
+{
+
+	ftm_config_t ftmInfo;
+	uint8_t updatedDutycycle;
+	ftm_chnl_pwm_signal_param_t ftmParam;
+
+	/* Fill in the FTM config struct with the default settings */
+	FTM_GetDefaultConfig(&ftmInfo);
+	/* Calculate the clock division based on the PWM frequency to be obtained */
+	ftmInfo.prescale = FTM_CalculateCounterClkDiv(SERVO_FTM_BASEADDR, SERVO_PWM_FREQUENCY, FTM_SOURCE_CLOCK);
+	/* Initialize FTM module */
+	FTM_Init(SERVO_FTM_BASEADDR, &ftmInfo);
+
+	/* Configure ftm params with frequency 24kHZ */
+	ftmParam.chnlNumber            = (ftm_chnl_t)SERVO_FTM_CHANNEL;
+	ftmParam.level                 = FTM_PWM_ON_LEVEL;
+	ftmParam.dutyCyclePercent      = 0U;
+	ftmParam.firstEdgeDelayPercent = 0U;
+	ftmParam.enableComplementary   = false;
+	ftmParam.enableDeadtime        = false;
+
+	if (kStatus_Success !=
+		FTM_SetupPwm(SERVO_FTM_BASEADDR, &ftmParam, 1U, kFTM_EdgeAlignedPwm, SERVO_PWM_FREQUENCY, FTM_SOURCE_CLOCK))
+	{
+		return -1;
+	}
+	FTM_StartTimer(SERVO_FTM_BASEADDR, kFTM_SystemClock);
+}
+
+void setServo(uint8_t angle)
+{
+
+	uint32_t cnv;
+	cnv = map(angle, 0, 180, 375, 5620);
+
+	SERVO_FTM_BASEADDR->CONTROLS[ (ftm_chnl_t)SERVO_FTM_CHANNEL].CnV = cnv;
+
+	/* Software trigger to update registers */
+	FTM_SetSoftwareTrigger(SERVO_FTM_BASEADDR, true);
 
 }
 

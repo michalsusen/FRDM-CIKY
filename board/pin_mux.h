@@ -151,6 +151,15 @@ void BOARD_InitBootPins(void);
 #define BOARD_INITPINS_pEcho_PIN_MASK (1U << 9U)      /*!<@brief PORT pin mask */
                                                       /* @} */
 
+/*! @name PORTD0 (number 93), J2[6]
+  @{ */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_INITPINS_pServo_PORT PORTD               /*!<@brief PORT peripheral base pointer */
+#define BOARD_INITPINS_pServo_PIN 0U                   /*!<@brief PORT pin number */
+#define BOARD_INITPINS_pServo_PIN_MASK (1U << 0U)      /*!<@brief PORT pin mask */
+                                                       /* @} */
+
 /*!
  * @brief Configures pin routing and optionally pin electrical features.
  *

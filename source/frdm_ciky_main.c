@@ -62,7 +62,7 @@ int main(void)
 
     float err;
     int kor, mL, mR;
-    int v = 180;
+    int v = 180;//180
     float P = 0.9; //Pokud se na rovné čáre rozkmitává, pak "P" snížit.
     //Pokud nevytáčí i mírné zatáčky, pak "P" zvýšit.
 
@@ -74,6 +74,7 @@ int main(void)
     BOARD_InitDebugConsole();
     CIKY_InitSensors();
     CIKY_InitMotors();
+    CIKY_InitServo();
 
     /* Set systick reload value to generate 1us interrupt */
 	if (SysTick_Config(SystemCoreClock/1000000))
@@ -82,6 +83,16 @@ int main(void)
 		{
 		}
 	}
+
+
+	setServo(0);
+	SysTick_DelayTicks(1000000U);
+	setServo(180);
+    SysTick_DelayTicks(1000000U);
+    setServo(0);
+	SysTick_DelayTicks(1000000U);
+	setServo(90);
+
 
 
     while (1)
@@ -97,7 +108,6 @@ int main(void)
 		odezva = pulseIn(BOARD_INITPINS_pEcho_GPIO,BOARD_INITPINS_pEcho_PIN,HIGH,5000); // délku pulzu v mikrosekundách (us)
 		vzdalenost = (int)(odezva / 58.31);    // přepočet na cm
 
-		//PRINTF("\r\nCapture value C(n)V=%d cm\r\n", vzdalenost);
 
 		if ((vzdalenost > 0) && (vzdalenost < 15)) {
 			 setMotors(0, 0);
