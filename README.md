@@ -6,8 +6,7 @@ FRDM-ČIKY Robot based on Freescale/NXP FRDM-K64F Board
 
 Wiring
 
-![FRDM-ČIKY_bb](https://user-images.githubusercontent.com/9370587/229135134-8a76af73-581c-4288-a586-91e0724147df.png)
-
+![FRDM-ČIKY_bb](https://user-images.githubusercontent.com/9370587/230780781-24583f62-afd1-4312-a63a-a5159074b0cd.png)
 
 Deploy
 
